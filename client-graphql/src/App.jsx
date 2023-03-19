@@ -1,41 +1,44 @@
-import {useEffect} from 'react';
 import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
+import {useQuery} from '@apollo/client';
+import GET_PERSONS from './querys/GET_PERSONS';
 import './App.css';
+import Persons from './components/Persons';
 
 function App() {
-	const API_JSON = 'http://localhost:3000/persons';
-	useEffect(() => {
-		fetch('https://swapi-graphql.netlify.app/.netlify/functions/index', {
-			method: 'POST',
-			headers: {'Content-Type': 'application/json'},
-			body: JSON.stringify({
-				query: `
-			query {
-				allPersons {
-					name
-				}
-			}
-		`,
-			}),
-		})
-			.then((res) => res.json())
-			.then((res) => {
-				console.log(res.data);
-			});
-	});
+	// const [person, setPerson] = useState();
+	const {loading, error, data} = useQuery(GET_PERSONS);
+	if (loading) return <p>Loading...</p>;
+	if (error) return <p>Error : {error.message}</p>;
+	// const API_JSON = 'http://localhost:4000/persons';
+	// useEffect(() => {
+	// 	fetch( API_JSON, {
+	// 		method: 'POST',
+	// 		headers: {'Content-Type': 'application/json'},
+	// 		body: JSON.stringify({
+	// 			query: `
+	// 		query {
+	// 			allPersons {
+	// 				name
+	// 			}
+	// 		}
+	// 	`,
+	// 		}),
+	// 	})
+	// 		.then((res) => res.json())
+	// 		.then((res) => {
+	// 			// console.log(res.data);
+	// 			setPerson(res.data.allPersons);
+	// 			console.log(res.data.allPersons);
+	// 		});
+	// }, []);
 
 	return (
 		<div className='App'>
-			<div>
-				<a href='https://vitejs.dev' target='_blank'>
-					<img src={viteLogo} className='logo' alt='Vite logo' />
-				</a>
-				<a href='https://reactjs.org' target='_blank'>
-					<img src={reactLogo} className='logo react' alt='React logo' />
-				</a>
-			</div>
+			<div></div>
 			<h1>GraphQl</h1>
+			<Persons persons={data.users} />
+			{/* <div>{data && data.allPersons.map((people) => <li key={people.name}>{people.name}</li>)}</div> */}
 		</div>
 	);
 }
